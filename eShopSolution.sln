@@ -3,18 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopSolution", "eShopSolution\eShopSolution.csproj", "{C5101FBC-F1ED-4672-B273-E31D2D17A7B4}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{571877F3-641F-4725-AC26-0833BE97C709}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopSolution.Data", "eShopSolution.Data\eShopSolution.Data.csproj", "{35EF400A-7D5E-41F0-8D67-020B17D1296E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopSolution.Data", "eShopSolution.Data\eShopSolution.Data.csproj", "{35EF400A-7D5E-41F0-8D67-020B17D1296E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopSolution.Application", "eShopSolution.Application\eShopSolution.Application.csproj", "{2BFCC134-5C25-4D00-874C-645590EA4FE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopSolution.Application", "eShopSolution.Application\eShopSolution.Application.csproj", "{2BFCC134-5C25-4D00-874C-645590EA4FE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopSolution.WebApp", "eShopSolution.WebApp\eShopSolution.WebApp.csproj", "{1FF15303-6B04-4189-BC9F-F6135AEAACC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopSolution.WebApp", "eShopSolution.WebApp\eShopSolution.WebApp.csproj", "{1FF15303-6B04-4189-BC9F-F6135AEAACC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,10 +20,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C5101FBC-F1ED-4672-B273-E31D2D17A7B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C5101FBC-F1ED-4672-B273-E31D2D17A7B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C5101FBC-F1ED-4672-B273-E31D2D17A7B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C5101FBC-F1ED-4672-B273-E31D2D17A7B4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{35EF400A-7D5E-41F0-8D67-020B17D1296E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{35EF400A-7D5E-41F0-8D67-020B17D1296E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35EF400A-7D5E-41F0-8D67-020B17D1296E}.Release|Any CPU.ActiveCfg = Release|Any CPU
