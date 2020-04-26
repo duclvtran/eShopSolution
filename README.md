@@ -1,4 +1,5 @@
-# ASP.NET 3.1 project from TEDU
+# ASP.NET 3.1 project
 ## Technologies
-### Entity Framework Core 3.1
-#### ...
+- ASP.Net Core 3.1
+- Entity Framework Core 3.1
+## Youtube
