@@ -8,4 +8,12 @@ Install Package:
 - Microsoft.EntityFrameworkCore.SqlServer
 - Microsoft.EntityFrameworkCore.Design
 - Microsoft.EntityFrameworkCore.Tools
+##Add Migration
+Install Package:
+- Microsoft.Extensions.Configuration.FileExtensions (ConfigurationBuilder().SetBasePath)
+- Microsoft.Extensions.Configuration.Json (ConfigurationBuilder().AddJsonFile)
+Run Package Manager Console
+- "Add-migration intail" (project eShopSolution.Data)
+- To undo this action, use "Remove-Migration"
+- "Update-database"
 ## Youtube
