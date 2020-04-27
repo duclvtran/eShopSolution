@@ -13,9 +13,19 @@ Install Package:
 Install Package:
 - Microsoft.Extensions.Configuration.FileExtensions (ConfigurationBuilder().SetBasePath)
 - Microsoft.Extensions.Configuration.Json (ConfigurationBuilder().AddJsonFile)
+
 Run Package Manager Console
-- "Add-migration intail" (project eShopSolution.Data)
-- To undo this action, use "Remove-Migration"
-- "Update-database"
+~~~bash
+Add-migration intail
+~~~
+To undo this action, use
+~~~bash
+Remove-Migration
+~~~
+Final, run
+~~~bash
+Update-database
+~~~
+
 ## Data Seeding
 ## Youtube
