@@ -13,7 +13,6 @@ Install Package:
 Install Package:
 * Microsoft.Extensions.Configuration.FileExtensions (ConfigurationBuilder().SetBasePath)
 * Microsoft.Extensions.Configuration.Json (ConfigurationBuilder().AddJsonFile)
-
 Run Package Manager Console
 ~~~bash
 Add-migration intail
@@ -26,5 +25,4 @@ Final, run
 ~~~bash
 Update-database
 ~~~
-
 ## Data Seeding

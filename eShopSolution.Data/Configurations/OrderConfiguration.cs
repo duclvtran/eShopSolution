@@ -1,6 +1,7 @@
 ﻿using eShopSolution.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,13 +24,10 @@ namespace eShopSolution.Data.Configurations
 
             builder.Property(x => x.ShipAddress).IsRequired().HasMaxLength(200);
 
-
             builder.Property(x => x.ShipName).IsRequired().HasMaxLength(200);
 
-
             builder.Property(x => x.ShipPhoneNumber).IsRequired().HasMaxLength(200);
-
-
+            builder.HasOne(x => x.AppUsers).WithMany(x => x.Orders).HasForeignKey(x => x.UserId);
         }
     }
 }
