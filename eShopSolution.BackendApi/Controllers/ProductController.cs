@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace eShopSolution.BackendApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class ProductController : ControllerBase
     {
@@ -19,10 +19,17 @@ namespace eShopSolution.BackendApi.Controllers
             _publicProductService = publicProductService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Get()
         {
             var products = await _publicProductService.GetAll();
             return Ok(products);
+        }
+
+        [HttpGet]
+        public ActionResult Test()
+        {
+            return Content("Ok");
         }
     }
 }

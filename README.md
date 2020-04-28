@@ -25,4 +25,12 @@ Final, run
 ~~~bash
 Update-database
 ~~~
+## Manage Image
+* 
+
+## Add Swagger
+~~~
+Install-Package Swashbuckle.AspNetCore -Version 5.0.0
+~~~bash
+
 ## Data Seeding
