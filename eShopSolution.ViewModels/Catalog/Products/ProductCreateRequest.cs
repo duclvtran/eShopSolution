@@ -1,4 +1,6 @@
-﻿namespace eShopSolution.ViewModels.Catalog.Products
+﻿using Microsoft.AspNetCore.Http;
+
+namespace eShopSolution.ViewModels.Catalog.Products
 {
     public class ProductCreateRequest
     {
@@ -14,6 +16,6 @@
         public string SeoAlias { get; set; }
         public string LanguageId { set; get; }
 
-        //public IFormFile ThumbnailImage { get; set; }
+        public IFormFile ThumbnailImage { get; set; }
     }
 }
