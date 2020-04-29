@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.IO;
 using eShopSolution.Application.Common;
+using eShopSolution.ViewModels.Catalog.ProductImages;
+using Microsoft.AspNetCore.Http.Features;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace eShopSolution.Application.Catalog.Products
 {
@@ -219,27 +222,48 @@ namespace eShopSolution.Application.Catalog.Products
             return fileName;
         }
 
-        public async Task<int> AddImages(int productId, List<IFormFile> files)
+        //Image Management
+        public async Task<ProductImageViewModel> GetImageById(int imageId)
         {
-            List<ProductImage> productImages = new List<ProductImage>();
-            foreach (var item in files)
+            var image = await _context.ProductImages.FindAsync(imageId);
+            var model = new ProductImageViewModel()
             {
-                var image = new ProductImage()
-                {
-                    Caption = "Thumbnail image",
-                    DateCreated = DateTime.Now,
-                    FileSize = item.Length,
-                    ImagePath = await this.SaveFile(item),
-                    IsDefault = true,
-                    SortOrder = 1
-                };
-                productImages.Add(image);
-            }
-            _context.ProductImages.AddRange(productImages);
-            return await _context.SaveChangesAsync();
+                Caption = image.Caption,
+                DateCreated = image.DateCreated,
+                FileSize = image.FileSize,
+                Id = image.Id,
+                ImagePath = image.ImagePath,
+                IsDefault = image.IsDefault,
+                ProductId = image.ProductId,
+                SortOrder = image.SortOrder
+            };
+
+            return model;
         }
 
-        public async Task<int> RemoveImages(int imageId)
+        public async Task<int> CreateImage(int productId, ProductImageCreateRequest request)
+        {
+            var image = new ProductImage()
+            {
+                Caption = request.Caption,
+                DateCreated = DateTime.Now,
+                ProductId = productId,
+                IsDefault = true,
+                SortOrder = 1
+            };
+
+            if (request.ImageFile != null)
+            {
+                image.FileSize = request.ImageFile.Length;
+                image.ImagePath = await this.SaveFile(request.ImageFile);
+            }
+
+            _context.ProductImages.Add(image);
+            await _context.SaveChangesAsync();
+            return image.Id;
+        }
+
+        public async Task<int> RemoveImage(int imageId)
         {
             var image = await _context.ProductImages.FindAsync(imageId);
             if (image == null) throw new EShopException($"Cannot find a Image with Id: {imageId}");
@@ -248,25 +272,32 @@ namespace eShopSolution.Application.Catalog.Products
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<int> UpdateImage(int imageId, string caption, bool isDefault)
+        public async Task<int> UpdateImage(int imageId, ProductImageUpdateRequest request)
         {
             var image = await _context.ProductImages.FindAsync(imageId);
-            image.Caption = caption;
-            image.IsDefault = isDefault;
+            image.Caption = request.Caption;
+            image.SortOrder = request.SortOrder;
+            image.IsDefault = request.IsDefault;
+            image.FileSize = request.ImageFile.Length;
+            image.ImagePath = await this.SaveFile(request.ImageFile);
             _context.ProductImages.Update(image);
 
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<List<ProductImageViewModel>> GetListImage(int productId)
+        public async Task<List<ProductImageViewModel>> GetListImages(int productId)
         {
             var productImages = await _context.ProductImages.Where(x => x.ProductId == productId)
                 .Select(x => new ProductImageViewModel()
                 {
+                    Caption = x.Caption,
+                    DateCreated = x.DateCreated,
+                    FileSize = x.FileSize,
                     Id = x.Id,
+                    ImagePath = x.ImagePath,
                     IsDefault = x.IsDefault,
-                    FilePath = x.ImagePath,
-                    FileSize = x.FileSize
+                    ProductId = x.ProductId,
+                    SortOrder = x.SortOrder
                 }).ToListAsync();
 
             return productImages;
