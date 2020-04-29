@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using eShopSolution.Application.Catalog.Products;
+﻿using eShopSolution.Application.Catalog.Products;
+using eShopSolution.Application.Common;
+using eShopSolution.ViewModels.Catalog.ProductImages;
 using eShopSolution.ViewModels.Catalog.Products;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
+using System.Composition;
+using System.Threading.Tasks;
 
 namespace eShopSolution.BackendApi.Controllers
 {
@@ -15,11 +15,13 @@ namespace eShopSolution.BackendApi.Controllers
     {
         private readonly IPublicProductService _publicProductService;
         private readonly IManageProductService _manageProductService;
+        private readonly IStorageService _storageService;
 
-        public ProductsController(IPublicProductService publicProductService, IManageProductService manageProductService)
+        public ProductsController(IPublicProductService publicProductService, IManageProductService manageProductService, IStorageService storageService)
         {
             _publicProductService = publicProductService;
             _manageProductService = manageProductService;
+            _storageService = storageService;
         }
 
         // /product/1
@@ -100,6 +102,69 @@ namespace eShopSolution.BackendApi.Controllers
             return BadRequest("Product not found");
         }
 
-        //Image
+        //Image Management
+        // /product/1
+        [HttpGet("{productId}/images/{imageId}")]
+        public async Task<IActionResult> GetImageById(int productId, int imageId)
+        {
+            var image = await _manageProductService.GetImageById(imageId);
+            if (image == null)
+                return BadRequest("Cannot find Product");
+            return Ok(image);
+        }
+
+        [HttpPost("{productId}/images")]
+        public async Task<IActionResult> CreateImage(int productId, [FromForm] ProductImageCreateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var imageId = await _manageProductService.CreateImage(productId, request);
+
+            if (imageId == 0)
+                return BadRequest();
+
+            var image = _manageProductService.GetImageById(imageId);
+            return CreatedAtAction(nameof(GetImageById), new { id = imageId }, image);
+        }
+
+        [HttpDelete("{productId}/images/{imageId}")]
+        public async Task<IActionResult> RemoveImage(int imageId)
+        {
+            var image = await _manageProductService.GetImageById(imageId);
+            if (image == null)
+                return BadRequest();
+
+            var result = await _manageProductService.RemoveImage(imageId);
+            if (result == 0)
+                return BadRequest();
+            else
+                await _storageService.DeleteFileAsync(image.ImagePath);
+
+            return Ok();
+        }
+
+        [HttpPut("{productId}/images/{imageId}")]
+        public async Task<IActionResult> UpdateImage(int imageId, [FromForm] ProductImageUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _manageProductService.UpdateImage(imageId, request);
+
+            if (result == 0)
+                return BadRequest("Image not found");
+            return Ok();
+        }
+
+        [HttpGet("{productId}/images")]
+        public async Task<IActionResult> GetListImages(int productId)
+        {
+            var images = await _manageProductService.GetListImages(productId);
+            if (images == null)
+                return BadRequest("Cannot find Images");
+
+            return Ok(images);
+        }
     }
 }
