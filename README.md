@@ -114,3 +114,5 @@ https://docs.fluentvalidation.net/en/latest/aspnet.html
 ~~~bash
 Install-Package FluentValidation.AspNetCore
 ~~~
+## Admin App
+Templates: https://startbootstrap.com/templates/
