@@ -28,9 +28,9 @@ Update-database
 ~~~
 ## Manage Image
 ## Add Swagger
-~~~
-Install-Package Swashbuckle.AspNetCore -Version 5.0.0
 ~~~bash
+Install-Package Swashbuckle.AspNetCore -Version 5.0.0
+~~~
 ## Add JWT
 ```c#
 public void ConfigureServices(IServiceCollection services)
