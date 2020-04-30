@@ -2,15 +2,15 @@
 using eShopSolution.Application.Common;
 using eShopSolution.ViewModels.Catalog.ProductImages;
 using eShopSolution.ViewModels.Catalog.Products;
-using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Composition;
 using System.Threading.Tasks;
 
 namespace eShopSolution.BackendApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IPublicProductService _publicProductService;
@@ -22,6 +22,12 @@ namespace eShopSolution.BackendApi.Controllers
             _publicProductService = publicProductService;
             _manageProductService = manageProductService;
             _storageService = storageService;
+        }
+
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            return Ok();
         }
 
         // /product/1
