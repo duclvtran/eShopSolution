@@ -130,3 +130,5 @@ public async Task<string> Authenticate(LoginRequest request)
     return token;
 }
 ```
+## Cookie Authentication without ASP.NET Identity
+Link https://docs.microsoft.com/en-us/aspnet/core/security/authentication/cookie?view=aspnetcore-3.1
