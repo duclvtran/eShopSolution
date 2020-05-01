@@ -32,6 +32,37 @@ Update-database
 Install-Package Swashbuckle.AspNetCore -Version 5.0.0
 ~~~
 ## Add JWT
+Create Token by jWT
+```c#
+public async Task<string> Authencate(LoginRequest request)
+{
+    var user = await _userManager.FindByNameAsync(request.UserName);
+    if (user == null) return null;
+
+    var result = await _signinManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true);
+    if (!result.Succeeded) return null;
+
+    var roles = _userManager.GetRolesAsync(user);
+    var claims = new[]
+    {
+        new Claim(ClaimTypes.Name, user.LastName),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.GivenName, user.FirstName),
+        new Claim(ClaimTypes.Role, string.Join(";",roles))
+    };
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
+    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+    var token = new JwtSecurityToken(_config["Tokens:Issuer"],
+        _config["Tokens:Issuer"],
+        claims,
+        expires: DateTime.Now.AddHours(3),
+        signingCredentials: creds);
+
+    return new JwtSecurityTokenHandler().WriteToken(token);
+}
+```
+Setup in Startup.cs function ConfigureServices
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
@@ -100,7 +131,7 @@ public void ConfigureServices(IServiceCollection services)
 	// some code here
 }
 ```
-And
+And setup function Configure
 ```C#
  public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 {
@@ -132,3 +163,47 @@ public async Task<string> Authenticate(LoginRequest request)
 ```
 ## Cookie Authentication without ASP.NET Identity
 Link https://docs.microsoft.com/en-us/aspnet/core/security/authentication/cookie?view=aspnetcore-3.1
+Write a funtion ValidateToken
+```C#
+private ClaimsPrincipal ValidateToken(string jwtToken)
+{
+    IdentityModelEventSource.ShowPII = true;
+
+    SecurityToken validatedToken;
+    TokenValidationParameters validationParameters = new TokenValidationParameters();
+
+    validationParameters.ValidateLifetime = true;
+
+    validationParameters.ValidAudience = _configuration["Tokens:Issuer"];
+    validationParameters.ValidIssuer = _configuration["Tokens:Issuer"];
+    validationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
+
+    ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwtToken, validationParameters, out validatedToken);
+
+    return principal;
+}
+```
+
+```C#
+[HttpPost]
+public async Task<IActionResult> Login(LoginRequest request)
+{
+    if (!ModelState.IsValid)
+        return View(ModelState);
+
+    var token = await _userApiClient.Authenticate(request);
+
+    var userPrincipal = this.ValidateToken(token);
+    var authProperties = new AuthenticationProperties
+    {
+        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+        IsPersistent = false
+    };
+    await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                userPrincipal,
+                authProperties);
+
+    return RedirectToAction("Index", "Home");
+}
+```
