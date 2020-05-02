@@ -1,11 +1,15 @@
 ﻿using eShopSolution.AdminApp.Services;
+using eShopSolution.Application.Systems.Users;
+using eShopSolution.ViewModels.Common;
 using eShopSolution.ViewModels.Systems.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -46,12 +50,15 @@ namespace eShopSolution.AdminApp.Controllers
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
                 IsPersistent = false
             };
+
+            HttpContext.Session.SetString("Token", token);
+
             await HttpContext.SignInAsync(
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         userPrincipal,
                         authProperties);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("GetUserPaging", "User");
         }
 
         [HttpPost]
@@ -77,6 +84,22 @@ namespace eShopSolution.AdminApp.Controllers
             ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwtToken, validationParameters, out validatedToken);
 
             return principal;
+        }
+
+        public async Task<IActionResult> GetUserPaging()
+        {
+            var token = HttpContext.Session.GetString("Token");
+            if (string.IsNullOrEmpty(token))
+                return RedirectToAction("Login", "User");
+
+            GetUserPagedingRequest request = new GetUserPagedingRequest();
+            request.Keyword = null;
+            request.PageIndex = 1;
+            request.PageSize = 10;
+            request.BearerToken = token;
+
+            var users = await _userApiClient.GetUserPaging(request);
+            return View(users);
         }
     }
 }

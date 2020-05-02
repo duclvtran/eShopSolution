@@ -41,8 +41,7 @@ namespace eShopSolution.BackendApi
                .AddDefaultTokenProviders();
 
             //Inject Implement to Interface (DI)
-            services.AddTransient<IPublicProductService, PublicProductService>();
-            services.AddTransient<IManageProductService, ManageProductService>();
+            services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IStorageService, FileStorageService>();
             //services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
             //services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();

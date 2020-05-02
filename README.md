@@ -207,3 +207,31 @@ public async Task<IActionResult> Login(LoginRequest request)
     return RedirectToAction("Index", "Home");
 }
 ```
+## Add Session to Asp.net Core
+Link https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state?view=aspnetcore-3.1
+~~~bash
+Install-Package Microsoft.AspNetCore.Session
+~~~
+Config in ConfigureServices
+```c#
+services.AddSession(options =>
+    {
+        options.IdleTimeout = TimeSpan.FromMinutes(30);
+        options.Cookie.HttpOnly = true;
+        options.Cookie.IsEssential = true;
+    });
+```
+Config in Configure
+```c#
+// app.UseAuthorization
+app.UseSession();
+// app.UseEndpoints
+```
+Set Session
+```c#
+HttpContext.Session.SetString("Token", token);
+```
+Get Session
+```c#
+var token = HttpContext.Session.GetString("Token");
+```

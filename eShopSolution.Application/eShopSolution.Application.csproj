@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Catalog\Products\IPublicProductService.cs" />
+    <Compile Remove="Catalog\Products\PublicProductService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace eShopSolution.Application.Catalog.Products
 {
-    public interface IManageProductService
+    public interface IProductService
     {
         Task<int> Create(ProductCreateRequest request);
 
@@ -21,6 +21,8 @@ namespace eShopSolution.Application.Catalog.Products
         Task AddViewcount(int productId);
 
         Task<ProductViewModel> GetById(int productId, string languageId);
+
+        Task<PagedResult<ProductViewModel>> GetAllByCategoryId(string languageId, GetPublicProductPagingRequest request);
 
         Task<PagedResult<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request);
 

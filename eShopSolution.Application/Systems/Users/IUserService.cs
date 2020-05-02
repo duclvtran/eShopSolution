@@ -1,4 +1,5 @@
-﻿using eShopSolution.ViewModels.Systems.Users;
+﻿using eShopSolution.ViewModels.Common;
+using eShopSolution.ViewModels.Systems.Users;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,7 @@ namespace eShopSolution.Application.Systems.Users
         Task<string> Authencate(LoginRequest request);
 
         Task<bool> Register(RegisterRequest request);
+
+        Task<PagedResult<UserVM>> GetUserPaging(GetUserPagedingRequest request);
     }
 }

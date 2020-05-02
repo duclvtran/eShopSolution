@@ -30,8 +30,10 @@ namespace eShopSolution.AdminApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Use IHttpClientFactory
             services.AddHttpClient();
 
+            //Use Authentication
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
@@ -39,6 +41,16 @@ namespace eShopSolution.AdminApp
                     options.AccessDeniedPath = "/User/Forbidden/";
                 });
 
+            //Use Session
+            //services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+                {
+                    options.IdleTimeout = TimeSpan.FromMinutes(30);
+                    options.Cookie.HttpOnly = true;
+                    options.Cookie.IsEssential = true;
+                });
+
+            //Use MVC
             services.AddControllersWithViews().AddRazorRuntimeCompilation().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LogInRequestValidator>());
 
             services.AddTransient<IUserApiClient, UserApiClient>();
@@ -47,6 +59,7 @@ namespace eShopSolution.AdminApp
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // Config for Development Mode
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -61,11 +74,15 @@ namespace eShopSolution.AdminApp
 
             app.UseStaticFiles();
 
+            // User Authentication
             app.UseAuthentication();
 
             app.UseRouting();
 
             app.UseAuthorization();
+
+            // User Session
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
