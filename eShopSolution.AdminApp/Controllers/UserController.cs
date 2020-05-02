@@ -1,6 +1,4 @@
 ﻿using eShopSolution.AdminApp.Services;
-using eShopSolution.Application.Systems.Users;
-using eShopSolution.ViewModels.Common;
 using eShopSolution.ViewModels.Systems.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -9,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -58,7 +55,7 @@ namespace eShopSolution.AdminApp.Controllers
                         userPrincipal,
                         authProperties);
 
-            return RedirectToAction("GetUserPaging", "User");
+            return RedirectToAction("Index", "User");
         }
 
         [HttpPost]
@@ -86,7 +83,8 @@ namespace eShopSolution.AdminApp.Controllers
             return principal;
         }
 
-        public async Task<IActionResult> GetUserPaging()
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
             var token = HttpContext.Session.GetString("Token");
             if (string.IsNullOrEmpty(token))
@@ -100,6 +98,22 @@ namespace eShopSolution.AdminApp.Controllers
 
             var users = await _userApiClient.GetUserPaging(request);
             return View(users);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(RegisterRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View(ModelState);
+
+            var result = await _userApiClient.Register(request);
+            return RedirectToAction("Index");
         }
     }
 }
