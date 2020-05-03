@@ -10,6 +10,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -33,7 +34,7 @@ namespace eShopSolution.AdminApp
             //Use IHttpClientFactory
             services.AddHttpClient();
 
-            //Use Authentication
+            //Use Authentication, if token fail redirect to /User/Forbidden/
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
@@ -54,6 +55,7 @@ namespace eShopSolution.AdminApp
             services.AddControllersWithViews().AddRazorRuntimeCompilation().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LogInRequestValidator>());
 
             services.AddTransient<IUserApiClient, UserApiClient>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

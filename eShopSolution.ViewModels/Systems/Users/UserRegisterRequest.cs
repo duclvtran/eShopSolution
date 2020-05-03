@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace eShopSolution.ViewModels.Systems.Users
 {
-    public class RegisterRequest
+    public class UserRegisterRequest
     {
         [Display(Name = "Tên")]
         public string FirstName { get; set; }

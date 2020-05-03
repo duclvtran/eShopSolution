@@ -29,6 +29,7 @@
                             <th>PhoneNumber</th>
                             <th>UserName</th>
                             <th>Email</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -39,31 +40,37 @@
                             <th>PhoneNumber</th>
                             <th>UserName</th>
                             <th>Email</th>
+                            <th>Action</th>
                         </tr>
                     </tfoot>
                     <tbody>
                         @foreach (var item in Model.Items)
                         {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Id)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.FirstName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.LastName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.UserName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Email)
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Id)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.FirstName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PhoneNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { Id=item.Id }) |
+                                @Html.ActionLink("Details", "Details", new { Id = item.Id }) |
+                                @Html.ActionLink("Delete", "Delete", new { Id = item.Id })
+                            </td>
+                        </tr>
                         }
                     </tbody>
                 </table>

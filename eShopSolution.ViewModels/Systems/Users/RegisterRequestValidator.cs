@@ -6,14 +6,18 @@ using System.Text;
 
 namespace eShopSolution.ViewModels.Systems.Users
 {
-    public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
+    public class RegisterRequestValidator : AbstractValidator<UserRegisterRequest>
     {
         public RegisterRequestValidator()
         {
             RuleFor(x => x.FirstName).NotEmpty().WithMessage("First Name is required");
             RuleFor(x => x.LastName).NotEmpty().WithMessage("Last Name is required");
             RuleFor(x => x.Dob).GreaterThan(DateTime.Now.AddYears(-100)).WithMessage("Brithday can not greater than 100 years");
+
+            //email format
             RuleFor(x => x.Email).NotEmpty().WithMessage("Email is required").Matches(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$").WithMessage("Email is not match");
+
+            //custom
             RuleFor(x => x).Custom((request, context) =>
             {
                 if (request.Password != request.ConfirmPassword)
