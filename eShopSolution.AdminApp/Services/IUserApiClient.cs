@@ -16,5 +16,7 @@ namespace eShopSolution.AdminApp.Services
         Task<ApiResult<PagedResult<UserVM>>> GetUserPaging(GetUserPagedingRequest request);
 
         Task<ApiResult<UserVM>> GetById(Guid id);
+
+        Task<ApiResult<bool>> Delete(Guid id);
     }
 }

@@ -47,7 +47,7 @@ namespace eShopSolution.AdminApp.Services
 
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
-            var response = await client.PostAsync("/api/users/register", httpContent);
+            var response = await client.PostAsync("/api/users", httpContent);
             var result = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
                 return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
@@ -97,6 +97,21 @@ namespace eShopSolution.AdminApp.Services
                 return JsonConvert.DeserializeObject<ApiSuccessResult<UserVM>>(body);
 
             return JsonConvert.DeserializeObject<ApiErrorResult<UserVM>>(body);
+        }
+
+        public async Task<ApiResult<bool>> Delete(Guid id)
+        {
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+            var response = await client.DeleteAsync($"/api/users/{id}");
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(body);
+
+            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(body);
         }
 
         //private async Task<string> CallApi(string url, string method, object request)
