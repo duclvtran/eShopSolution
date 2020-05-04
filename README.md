@@ -1,4 +1,4 @@
-https://en.wikipedia.org/wiki/Markdown#Example
+﻿https://en.wikipedia.org/wiki/Markdown#Example
 # ASP.NET 3.1 project
 ## Technologies
 1. ASP.Net Core 3.1
@@ -267,4 +267,106 @@ HttpContext.Session.SetString("Token", token);
 Get Session
 ```c#
 var token = HttpContext.Session.GetString("Token");
+```
+## User Paging by View Component
+Link https://docs.microsoft.com/en-us/aspnet/core/mvc/views/view-components?view=aspnetcore-3.1
+Create Component in Controller->Components->PagerViewComponent.cs with code:
+```c#
+public class PagerViewComponent : ViewComponent
+{
+    public Task<IViewComponentResult> InvokeAsync(PagedResultBase result)
+    {
+        return Task.FromResult((IViewComponentResult)View("Default", result));
+    }
+}
+```
+Create view in View->Shared->Components->Pager->Default.cshtml
+```c#
+@model eShopSolution.ViewModels.Common.PagedResultBase
+@{
+    var urlTemplate = Url.Action() + "?pageIndex={0}";
+    var request = ViewContext.HttpContext.Request;
+    foreach (var key in request.Query.Keys)
+    {
+        if (key == "pageIndex")
+        {
+            continue;
+        }
+        if (request.Query[key].Count > 1)
+        {
+            foreach (var item in (string[])request.Query[key])
+            {
+                urlTemplate += "&" + key + "=" + item;
+            }
+        }
+        else
+        {
+            urlTemplate += "&" + key + "=" + request.Query[key];
+        }
+    }
+
+    var startIndex = Math.Max(Model.PageIndex - 5, 1);
+    var finishIndex = Math.Min(Model.PageIndex + 5, Model.PageCount);
+}
+
+@if (Model.PageCount > 1)
+{
+    <ul class="pagination">
+        @if (Model.PageIndex != startIndex)
+        {
+            <li class="page-item">
+                <a class="page-link" title="1" href="@urlTemplate.Replace("{0}", "1")">Đầu</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="@urlTemplate.Replace("{0}", (Model.PageIndex-1).ToString())">Trước</a>
+            </li>
+        }
+        @for (var i = startIndex; i <= finishIndex; i++)
+        {
+            if (i == Model.PageIndex)
+            {
+                <li class="page-item active">
+                    <a class="page-link" href="#">@i <span class="sr-only">(current)</span></a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" title="Trang @i.ToString()" href="@urlTemplate.Replace("{0}", i.ToString())">@i</a></li>
+            }
+        }
+        @if (Model.PageIndex != finishIndex)
+        {
+            <li class="page-item">
+                <a class="page-link" title="@Model.PageCount.ToString()" href="@urlTemplate.Replace("{0}", (Model.PageIndex+1).ToString())">Sau</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="@urlTemplate.Replace("{0}", Model.PageCount.ToString())">Cuối</a>
+            </li>
+        }
+    </ul>
+}
+```
+Create Model Common->PagedResultBase.cs
+```c#
+ public class PagedResultBase
+{
+    public int PageIndex { get; set; }
+    public int PageSize { get; set; }
+    public int TotalRecords { get; set; }
+    public int PageCount
+    {
+        get
+        {
+            var pageCount = (double)TotalRecords / PageSize;
+            return (int)Math.Ceiling(pageCount);
+        }
+    }
+}
+```
+Update Model PagedResult
+```c#
+public class PagedResult<T> : PagedResultBase
+{
+    public List<T> Items { set; get; }
+}
 ```

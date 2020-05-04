@@ -74,7 +74,8 @@ namespace eShopSolution.Application.Systems.Users
                 FirstName = user.FirstName,
                 Dob = user.Dob,
                 Id = user.Id,
-                LastName = user.LastName
+                LastName = user.LastName,
+                UserName = user.UserName
             };
             return new ApiSuccessResult<UserVM>(userVm);
         }
@@ -106,7 +107,9 @@ namespace eShopSolution.Application.Systems.Users
             //3. Select and projection
             var pagedResult = new PagedResult<UserVM>()
             {
-                TotalRecord = totalRow,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                TotalRecords = totalRow,
                 Items = data
             };
             return new ApiSuccessResult<PagedResult<UserVM>>(pagedResult);

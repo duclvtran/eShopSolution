@@ -84,16 +84,16 @@ namespace eShopSolution.AdminApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 1)
         {
             var token = HttpContext.Session.GetString("Token");
             if (string.IsNullOrEmpty(token))
                 return RedirectToAction("Login", "User");
 
             GetUserPagedingRequest request = new GetUserPagedingRequest();
-            request.Keyword = null;
-            request.PageIndex = 1;
-            request.PageSize = 10;
+            request.Keyword = keyword;
+            request.PageIndex = pageIndex;
+            request.PageSize = pageSize;
 
             var users = await _userApiClient.GetUserPaging(request);
             return View(users.ResultObj);
@@ -152,6 +152,17 @@ namespace eShopSolution.AdminApp.Controllers
 
             ModelState.AddModelError("", result.Message);
             return View(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Detail(Guid id)
+        {
+            var result = await _userApiClient.GetById(id);
+            if (result.IsSusscessed)
+            {
+                return View(result.ResultObj);
+            }
+            return View(result.Message);
         }
     }
 }
