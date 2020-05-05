@@ -370,3 +370,41 @@ public class PagedResult<T> : PagedResultBase
     public List<T> Items { set; get; }
 }
 ```
+## Show message by tempdata
+In View Create.cshtm, Edit.cshtm, Delele.cshtm add code:
+```c#
+[HttpPost]
+public async Task<IActionResult> Create(UserRegisterRequest request)
+{
+    *if (!ModelState.IsValid)
+        return View();
+
+    var result = await _userApiClient.Register(request);
+    if (result.IsSusscessed)
+    {*
+        TempData["Result"] = "Tạo mới người dùng thành công.";
+        *return RedirectToAction("Index");
+    }
+    ModelState.AddModelError("", result.Message);
+    return View();*
+}
+```
+In View Index.cshtm
+```html
+...
+@if (ViewBag.Successmsg != null)
+{
+<div id="msgAlert" class="alert alert-success" role="alert">
+    @ViewBag.Successmsg
+</div>
+}
+...
+```
+Add javascript for hiding message after the show
+```javascript
+<script>
+    setTimeout(function () {
+        $('#msgAlert').fadeOut('slow');
+    }, 2000);
+</script>
+```
