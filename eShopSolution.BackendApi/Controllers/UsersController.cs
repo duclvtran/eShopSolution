@@ -46,7 +46,7 @@ namespace eShopSolution.BackendApi.Controllers
         public async Task<IActionResult> Register([FromBody] UserRegisterRequest request)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest();
 
             var result = await _userService.Register(request);
             if (result.IsSusscessed)

@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,16 +40,21 @@ namespace eShopSolution.AdminApp.Controllers
             if (!ModelState.IsValid)
                 return View(ModelState);
 
-            var token = await _userApiClient.Authenticate(request);
+            var result = await _userApiClient.Authenticate(request);
+            if (result.ResultObj == null)
+            {
+                ModelState.AddModelError("", result.Message);
+                return View();
+            }
 
-            var userPrincipal = this.ValidateToken(token.ResultObj);
+            var userPrincipal = this.ValidateToken(result.ResultObj);
             var authProperties = new AuthenticationProperties
             {
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
                 IsPersistent = false
             };
 
-            HttpContext.Session.SetString("Token", token.ResultObj);
+            HttpContext.Session.SetString("Token", result.ResultObj);
 
             await HttpContext.SignInAsync(
                         CookieAuthenticationDefaults.AuthenticationScheme,
@@ -62,6 +68,7 @@ namespace eShopSolution.AdminApp.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Remove("Token");
             return RedirectToAction("Login", "User");
         }
 
@@ -96,6 +103,7 @@ namespace eShopSolution.AdminApp.Controllers
             request.PageSize = pageSize;
 
             var users = await _userApiClient.GetUserPaging(request);
+            ViewBag.Keyword = keyword;
             return View(users.ResultObj);
         }
 
@@ -109,13 +117,13 @@ namespace eShopSolution.AdminApp.Controllers
         public async Task<IActionResult> Create(UserRegisterRequest request)
         {
             if (!ModelState.IsValid)
-                return View(ModelState);
+                return View();
 
             var result = await _userApiClient.Register(request);
             if (result.IsSusscessed)
                 return RedirectToAction("Index");
             ModelState.AddModelError("", result.Message);
-            return View(result);
+            return View();
         }
 
         [HttpGet]
