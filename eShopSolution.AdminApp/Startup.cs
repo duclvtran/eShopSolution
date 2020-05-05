@@ -55,6 +55,7 @@ namespace eShopSolution.AdminApp
             services.AddControllersWithViews().AddRazorRuntimeCompilation().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LogInRequestValidator>());
 
             services.AddTransient<IUserApiClient, UserApiClient>();
+            services.AddTransient<IRoleApiClient, RoleApiClient>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 

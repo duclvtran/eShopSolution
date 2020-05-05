@@ -49,7 +49,7 @@ namespace eShopSolution.BackendApi.Controllers
                 return BadRequest();
 
             var result = await _userService.Register(request);
-            if (result.IsSusscessed)
+            if (result.IsSuccessed)
                 return Ok(result);
             return BadRequest(result);
         }
@@ -62,7 +62,20 @@ namespace eShopSolution.BackendApi.Controllers
                 return BadRequest(ModelState);
 
             var result = await _userService.Update(id, request);
-            if (result.IsSusscessed)
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        // /api/user/id
+        [HttpPut("{Id}/roles")]
+        public async Task<IActionResult> RoleAssign(Guid id, [FromBody] RoleAssignRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _userService.RoleAssign(id, request);
+            if (result.IsSuccessed)
                 return Ok(result);
             return BadRequest(result);
         }

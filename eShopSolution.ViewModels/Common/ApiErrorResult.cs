@@ -14,13 +14,13 @@ namespace eShopSolution.ViewModels.Common
 
         public ApiErrorResult(string message)
         {
-            IsSusscessed = false;
+            IsSuccessed = false;
             Message = message;
         }
 
         public ApiErrorResult(string[] validationError)
         {
-            IsSusscessed = false;
+            IsSuccessed = false;
             ValidationError = validationError;
         }
     }

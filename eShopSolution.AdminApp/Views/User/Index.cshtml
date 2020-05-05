@@ -96,9 +96,10 @@
                                     @Html.DisplayFor(modelItem => item.Email)
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Edit", "Edit", new { Id = item.Id }) |
-                                    @Html.ActionLink("Detail", "Detail", new { Id = item.Id }) |
-                                    @Html.ActionLink("Delete", "Delete", new { Id = item.Id })
+                                    @Html.ActionLink("Sửa", "Edit", new { Id = item.Id }) |
+                                    @Html.ActionLink("Chi tiết", "Detail", new { Id = item.Id }) |
+                                    @Html.ActionLink("Xóa", "Delete", new { Id = item.Id })
+                                    @Html.ActionLink("Gán quyền", "RoleAssign", new { Id = item.Id })
                                 </td>
                             </tr>
                         }
